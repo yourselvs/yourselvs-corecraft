@@ -52,8 +52,7 @@ public class CommandProcessor {
 		ItemStack air = new ItemStack(Material.AIR);
 		
 		// If user doesn't have permission, send error message
-		if(!cmd.sender.hasPermission("artifact.redeem")) {
-			plugin.getMessenger().sendErrorMessage(cmd.sender, "You don't have permission to do this.");
+		if(!plugin.checkPermission("artifact.redeem", cmd.sender)) {
 			return;
 		}
 
@@ -134,6 +133,8 @@ public class CommandProcessor {
 		case "state":
 			parseArtifactState(cmd);
 			break;
+		case "range":
+			parseArtifactRange(cmd);
 		default:
 			parseArtifactError(cmd);
 		}
@@ -141,7 +142,7 @@ public class CommandProcessor {
 	
 	
 	private void parseArtifactHelp(Cmd cmd) {
-			
+		// TODO write help menu
 	}
 	
 	private void parseArtifactSet(Cmd cmd) {
@@ -149,8 +150,7 @@ public class CommandProcessor {
 		Player player;
 		
 		// If user doesn't have permission, send error message
-		if(!cmd.sender.hasPermission("artifact.set")) {
-			plugin.getMessenger().sendErrorMessage(cmd.sender, "You don't have permission to do this.");
+		if(!plugin.checkPermission("artifact.control", cmd.sender)) {
 			return;
 		}
 
@@ -184,20 +184,24 @@ public class CommandProcessor {
 	
 	private void parseArtifactTime(Cmd cmd) {
 		// If sender doesn't have permission, send error message
-		if(!cmd.sender.hasPermission("artifact.time")) {
-			plugin.getMessenger().sendErrorMessage(cmd.sender, "You don't have permission to do this.");
+		if(!plugin.checkPermission("artifact.control", cmd.sender)) {
+			return;
 		}
+
 		// If no params are included, send user the current time
-		else if(cmd.args.length == 1) { 
+		if(cmd.args.length == 1) { 
 			int time = plugin.getArtifactHandler().getSeconds();
 			
 			plugin.getMessenger().sendMessage(cmd.sender, "Artifacts drop every " + ChatColor.YELLOW + time + ChatColor.RESET + " seconds.");
 		}
-		// If time param is included, but not an integer, send error message
-		else if(!isParsableInteger(cmd.args[1])) {
-			plugin.getMessenger().sendErrorMessage(cmd.sender, "The time must be an integer in seconds.");
-		}
+		// If integer param is included, set drop time
 		else {
+			// If time param is not an integer, send error message
+			if(!isParsableInteger(cmd.args[1])) {
+				plugin.getMessenger().sendErrorMessage(cmd.sender, "The time must be an integer in seconds.");
+				return;
+			}
+			
 			// Parse time param
 			int time = Integer.parseInt(cmd.args[1]);
 			
@@ -211,11 +215,12 @@ public class CommandProcessor {
 	
 	private void parseArtifactStart(Cmd cmd) {
 		// If sender doesn't have permission, send error message
-		if(!cmd.sender.hasPermission("artifact.control")) {
-			plugin.getMessenger().sendErrorMessage(cmd.sender, "You don't have permission to do this.");
+		if(!plugin.checkPermission("artifact.control", cmd.sender)) {
+			return;
 		}
+		
 		// If dropper is already running, send error message
-		else if(plugin.getArtifactHandler().isRunning()) {
+		if(plugin.getArtifactHandler().isRunning()) {
 			plugin.getMessenger().sendErrorMessage(cmd.sender, "The artifact dropper is already running.");
 		}
 		// Set dropper to ON
@@ -226,11 +231,12 @@ public class CommandProcessor {
 	
 	private void parseArtifactStop(Cmd cmd) {
 		// If sender doesn't have permission, send error message
-		if(!cmd.sender.hasPermission("artifact.control")) {
-			plugin.getMessenger().sendErrorMessage(cmd.sender, "You don't have permission to do this.");
+		if(!plugin.checkPermission("artifact.control", cmd.sender)) {
+			return;
 		}
+		
 		// If dropper is already running, send error message
-		else if(!plugin.getArtifactHandler().isRunning()) {
+		if(!plugin.getArtifactHandler().isRunning()) {
 			plugin.getMessenger().sendErrorMessage(cmd.sender, "The artifact dropper is already stopped.");
 		}
 		// Set dropper to OFF
@@ -241,31 +247,53 @@ public class CommandProcessor {
 	
 	private void parseArtifactState(Cmd cmd) {
 		// If sender doesn't have permission, send error message
-		if(!cmd.sender.hasPermission("artifact.state")) {
-			plugin.getMessenger().sendErrorMessage(cmd.sender, "You don't have permission to do this.");
+		if(!plugin.checkPermission("artifact.state", cmd.sender)) {
+			return;
+		}
+		
+		List<String> msgs = new ArrayList<String>();
+		SimpleDateFormat sdf = new SimpleDateFormat("mm:ss");
+		
+		// Add drop status message, green for running, red for stopped
+		String running = (plugin.getArtifactHandler().isRunning() ? ChatColor.GREEN + "Running" : ChatColor.RED + "Stopped");
+		msgs.add("Drop status: " + running);
+		
+		// Get and format time it takes for drops to refresh
+		Date refreshTime = new Date(1000 * plugin.getArtifactHandler().getSeconds());
+		msgs.add("Drop refresh time: " + ChatColor.YELLOW + sdf.format(refreshTime));
+		
+		// Get and format time (mm:ss) until next drop
+		Date dropTime = new Date(plugin.getArtifactHandler().getDropTime() - System.currentTimeMillis());
+		msgs.add("Time to next drop: " + ChatColor.YELLOW + sdf.format(dropTime));
+		
+		// Add artifact display name
+		String itemName = plugin.getArtifactHandler().getArtifact().getItemMeta().getDisplayName();
+		msgs.add("Artifact name: " + itemName);
+		
+		// Send messages to player
+		plugin.getMessenger().sendMessages(cmd.sender, msgs, "Artifact Plugin State");
+	}
+	
+	private void parseArtifactRange(Cmd cmd) {
+		// If sender doesn't have permission, send error message
+		if(!plugin.checkPermission("artifact.control", cmd.sender)) {
+			return;
+		}
+		
+		// If no param is included, display range to user
+		if(cmd.args.length == 1) {
+			
 		}
 		else {
-			List<String> msgs = new ArrayList<String>();
-			SimpleDateFormat sdf = new SimpleDateFormat("mm:ss");
+			// If only one num param is included, set min and max to that param
+			if(cmd.args.length == 2) {
+				
+			}
 			
-			// Add drop status message, green for running, red for stopped
-			String running = (plugin.getArtifactHandler().isRunning() ? ChatColor.GREEN + "Running" : ChatColor.RED + "Stopped");
-			msgs.add("Drop status: " + running);
-			
-			// Get and format time it takes for drops to refresh
-			Date refreshTime = new Date(1000 * plugin.getArtifactHandler().getSeconds());
-			msgs.add("Drop refresh time: " + ChatColor.YELLOW + sdf.format(refreshTime));
-			
-			// Get and format time (mm:ss) until next drop
-			Date dropTime = new Date(plugin.getArtifactHandler().getDropTime() - System.currentTimeMillis());
-			msgs.add("Time to next drop: " + ChatColor.YELLOW + sdf.format(dropTime));
-			
-			// Add artifact display name
-			String itemName = plugin.getArtifactHandler().getArtifact().getItemMeta().getDisplayName();
-			msgs.add("Artifact name: " + itemName);
-			
-			// Send messages to player
-			plugin.getMessenger().sendMessages(cmd.sender, msgs, "Artifact Plugin State");
+			// If more than one param is included, set min/max to first two and ignore the rest
+			else {
+				
+			}
 		}
 	}
 	

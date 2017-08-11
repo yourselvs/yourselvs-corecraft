@@ -1,9 +1,13 @@
 package yourselvs.main;
 
 
+import java.util.logging.Level;
+
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import yourselvs.main.CommandProcessor.Cmd;
@@ -55,6 +59,16 @@ public class Plugin extends JavaPlugin
 		
 		commandThread.setName(pluginName + " Command Processor");
 		commandThread.start();
+		
+		return true;
+	}
+	
+	public boolean checkPermission(String permission, CommandSender player) {
+		if(!player.hasPermission(permission)) {
+			messenger.sendErrorMessage(player, "You don't have permission to do this.");
+			getLogger().log(Level.WARNING, "Player \"" + player.getName() + "\" attempted to do something that required permission \"" + permission + "\".");
+			return false;
+		}
 		
 		return true;
 	}

@@ -42,21 +42,41 @@ public class ArtifactHandler {
 		this.seconds = seconds;
 	}
 	
+	public void setArtifactMinMax(int val1, int val2) {
+		if(val1 < val2) {
+			valueMin = val1;
+			valueMax = val2;
+		}
+		else {
+			valueMin = val2;
+			valueMax = val1;
+		}
+	}
+	
 	public void setRunning(boolean running) {
 		this.running = running;
 	}
 	
 	public double redeemArtifact() {
+		// Get range of random numbers
 		int valueRange = valueMax - valueMin;
 		
+		// Get value in cents
 		valueRange *= 100;
 		
+		// Init rand variable
 		rand = new Random(System.currentTimeMillis());
 		
+		// get number of cents to add to min
 		double value = rand.nextInt(valueRange);
 		
+		// get value in dollars
 		value /= 100.0;
 		
+		// add min
+		value += valueMin; 
+		
+		// return value
 		return value;
 	}
 	
