@@ -21,6 +21,7 @@ public class Plugin extends JavaPlugin
 	public static final String prefix = "ARTIFACTS";
 	
 	public final static Object commandLock = new Object();
+	public final static Object configLock = new Object();
 	
 	private ArtifactHandler artifactHandler;
 	private CommandProcessor commandProcessor;
@@ -61,6 +62,19 @@ public class Plugin extends JavaPlugin
 		commandThread.start();
 		
 		return true;
+	}
+	
+	public void updateConfig(String str, Object obj) {
+		Thread configThread = new Thread(new Runnable() {
+			public void run() {
+				synchronized(configLock) {
+					getConfig().set(str, obj);
+				}
+			}
+		});
+		
+		configThread.setName(pluginName + " Config Updater");
+		configThread.start();
 	}
 	
 	public boolean checkPermission(String permission, CommandSender player) {

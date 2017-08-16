@@ -7,6 +7,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import yourselvs.utils.CfgVars;
+
 public class ArtifactHandler {
 	private ItemStack artifact;
 	private int seconds;
@@ -21,10 +23,19 @@ public class ArtifactHandler {
 	public static final Object artifactLock = new Object();
 	
 	public ArtifactHandler(Plugin plugin) {
-		artifact = null;
-		seconds = 0;
-		running = false;
 		this.plugin = plugin;
+		
+		if(plugin.getConfig().contains(CfgVars.artifactItemStack)) {
+			artifact = plugin.getConfig().getItemStack(CfgVars.artifactItemStack);
+		}
+		else {
+			artifact = null;
+		}
+		
+		seconds = plugin.getConfig().getInt(CfgVars.secondsBetweenDrop);
+		running = plugin.getConfig().getBoolean(CfgVars.isPluginRunning);
+		rangeMax = plugin.getConfig().getInt(CfgVars.artifactRangeMax);
+		rangeMin = plugin.getConfig().getInt(CfgVars.artifactRangeMin);
 		
 		startArtifactThread();
 	}
@@ -38,10 +49,14 @@ public class ArtifactHandler {
 	
 	public void setArtifact(ItemStack artifact) {
 		this.artifact = artifact;
+		
+		plugin.updateConfig(CfgVars.artifactItemStack, artifact);
 	}
 	
 	public void setSeconds(int seconds) {
 		this.seconds = seconds;
+		
+		plugin.updateConfig(CfgVars.secondsBetweenDrop, seconds);
 	}
 	
 	public void setArtifactMinMax(int val1, int val2) {
@@ -53,10 +68,14 @@ public class ArtifactHandler {
 			rangeMin = val2;
 			rangeMax = val1;
 		}
+		plugin.updateConfig(CfgVars.artifactRangeMin, rangeMin);
+		plugin.updateConfig(CfgVars.artifactRangeMax, rangeMax);
 	}
 	
 	public void setRunning(boolean running) {
 		this.running = running;
+		
+		plugin.updateConfig(CfgVars.isPluginRunning, running);
 	}
 	
 	public double redeemArtifact() {

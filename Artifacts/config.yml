@@ -1,0 +1,4 @@
+secondsBetweenDrop: 300
+artifactRangeMin: 50
+artifactRangeMax: 500
+isPluginRunning: true
