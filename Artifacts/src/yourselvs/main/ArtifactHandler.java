@@ -1,6 +1,7 @@
 package yourselvs.main;
 
 import java.util.Random;
+import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -10,9 +11,10 @@ import org.bukkit.inventory.ItemStack;
 import yourselvs.utils.CfgVars;
 
 public class ArtifactHandler {
+	private Plugin plugin;
+	
 	private ItemStack artifact;
 	private int seconds;
-	private Plugin plugin;
 	private Thread artifactThread;
 	private boolean running;
 	private long dropTime;
@@ -108,7 +110,10 @@ public class ArtifactHandler {
 			@Override
 			public void run() {
 				while(true) {
-					if(running && hasValidParameters()) {
+					if(!hasValidParameters()) {
+						plugin.getLogger().log(Level.SEVERE, "Artifacts could not drop as parameters were invalid.");
+					}
+					else if(running) {
 						dropArtifacts();
 					}
 					

@@ -190,7 +190,7 @@ public class CommandProcessor {
 		plugin.getArtifactHandler().setArtifact(handStack);
 		
 		// Send user message saying artifact has been updated
-		plugin.getMessenger().sendMessage(cmd.sender, "The artifact has been set to the item in your main hand.");
+		plugin.getMessenger().sendMessage(cmd.sender, "The artifact has been set to: " + handStack.getItemMeta().getDisplayName());
 	}
 	
 	private void parseArtifactTime(Cmd cmd) {
@@ -237,6 +237,7 @@ public class CommandProcessor {
 		// Set dropper to ON
 		else {
 			plugin.getArtifactHandler().setRunning(true);
+			plugin.getMessenger().sendMessage(cmd.sender, "The artifact dropper is now running.");
 		}
 	}
 	
@@ -253,6 +254,7 @@ public class CommandProcessor {
 		// Set dropper to OFF
 		else {
 			plugin.getArtifactHandler().setRunning(false);
+			plugin.getMessenger().sendMessage(cmd.sender, "The artifact dropper is now stopped.");
 		}
 	}
 	
