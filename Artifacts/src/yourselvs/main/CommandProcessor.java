@@ -142,7 +142,16 @@ public class CommandProcessor {
 	
 	
 	private void parseArtifactHelp(Cmd cmd) {
-		// TODO write help menu
+		Map<String, String> cmds = new HashMap<String, String>();
+		
+		cmds.put("redeem", "Redeems all artifacts in a player's inventory.");
+		cmds.put("artifact help", "View information on artifact commands.");
+		cmds.put("artifact state", "Retrieves information about the state of the plugin.");
+		cmds.put("artifact set", "Sets the artifact to the item in your main hand.");
+		cmds.put("artifact time [seconds]", "Sets the number of seconds in between artifact drops.");
+		cmds.put("artifact range [min] [max]", "Sets the integer range of artifact values.");
+		cmds.put("artifact stop", "Stops artifacts from dropping.");
+		cmds.put("artifact start", "Begins dropping artifacts.");
 	}
 	
 	private void parseArtifactSet(Cmd cmd) {
