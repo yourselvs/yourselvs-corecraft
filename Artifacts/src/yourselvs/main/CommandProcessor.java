@@ -293,17 +293,55 @@ public class CommandProcessor {
 		
 		// If no param is included, display range to user
 		if(cmd.args.length == 1) {
+			// Get min and max values
+			int rangeMin = plugin.getArtifactHandler().getRangeMin();
+			int rangeMax = plugin.getArtifactHandler().getRangeMax();
 			
+			// Send user range information
+			plugin.getMessenger().sendMessage(cmd.sender, "Artifact value range: " + 
+					ChatColor.YELLOW + rangeMin + 
+					ChatColor.RESET + "-" + 
+					ChatColor.YELLOW + rangeMax);
 		}
 		else {
 			// If only one num param is included, set min and max to that param
 			if(cmd.args.length == 2) {
+				// Check if num param is parsable
+				if(!isParsableInteger(cmd.args[1])) {
+					plugin.getMessenger().sendErrorMessage(cmd.sender, "The range must be an integer.");
+					return;
+				}
 				
+				// Parse num param
+				int range = Integer.parseInt(cmd.args[1]);
+				
+				// Set min and max to the same number
+				plugin.getArtifactHandler().setArtifactMinMax(range, range);
+				
+				// Send user confirmation
+				plugin.getMessenger().sendMessage(cmd.sender, "Artifact value set to: " + ChatColor.YELLOW + range);
 			}
 			
 			// If more than one param is included, set min/max to first two and ignore the rest
 			else {
+				// Check if params are parsable
+				if(!isParsableInteger(cmd.args[1]) || !isParsableInteger(cmd.args[2])) {
+					plugin.getMessenger().sendErrorMessage(cmd.sender, "Both range values must be integers.");
+					return;
+				}
 				
+				// Parse range values
+				int range1 = Integer.parseInt(cmd.args[1]);
+				int range2 = Integer.parseInt(cmd.args[2]);
+				
+				// Set min and max to the two values
+				plugin.getArtifactHandler().setArtifactMinMax(range1, range2);
+				
+				// Send user confirmation
+				plugin.getMessenger().sendMessage(cmd.sender, "Artifact value range set to: " + 
+						ChatColor.YELLOW + plugin.getArtifactHandler().getRangeMin() + 
+						ChatColor.RESET + "-" + 
+						ChatColor.YELLOW + plugin.getArtifactHandler().getRangeMax());
 			}
 		}
 	}

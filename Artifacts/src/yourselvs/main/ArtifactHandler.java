@@ -14,7 +14,7 @@ public class ArtifactHandler {
 	private Thread artifactThread;
 	private boolean running;
 	private long dropTime;
-	private int valueMax, valueMin;
+	private int rangeMax, rangeMin;
 
 	private Random rand;
 	
@@ -33,6 +33,8 @@ public class ArtifactHandler {
 	public int getSeconds() {return seconds;}
 	public boolean isRunning() {return running;}
 	public long getDropTime() {return dropTime;}
+	public int getRangeMin() {return rangeMin;}
+	public int getRangeMax() {return rangeMax;}
 	
 	public void setArtifact(ItemStack artifact) {
 		this.artifact = artifact;
@@ -44,12 +46,12 @@ public class ArtifactHandler {
 	
 	public void setArtifactMinMax(int val1, int val2) {
 		if(val1 < val2) {
-			valueMin = val1;
-			valueMax = val2;
+			rangeMin = val1;
+			rangeMax = val2;
 		}
 		else {
-			valueMin = val2;
-			valueMax = val1;
+			rangeMin = val2;
+			rangeMax = val1;
 		}
 	}
 	
@@ -59,7 +61,7 @@ public class ArtifactHandler {
 	
 	public double redeemArtifact() {
 		// Get range of random numbers
-		int valueRange = valueMax - valueMin;
+		int valueRange = rangeMax - rangeMin;
 		
 		// Get value in cents
 		valueRange *= 100;
@@ -74,7 +76,7 @@ public class ArtifactHandler {
 		value /= 100.0;
 		
 		// add min
-		value += valueMin; 
+		value += rangeMin; 
 		
 		// return value
 		return value;
