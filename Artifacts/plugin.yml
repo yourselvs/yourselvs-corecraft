@@ -3,3 +3,21 @@ name: Plugin
 version: 0.1
 author: yourselvs
 description: A plugin.
+commands:
+    redeem:
+        description: Redeem all artifacts in your inventory.
+        usage: /<command>
+    artifact:
+        description: Access the functionality of the Artifacts plugin.
+        usage: /<command> <sub-command>
+permissions:
+    artifact.redeem:
+        default: true
+    artifact.use:
+        default: true
+    artifact.help:
+        default: true
+    artifact.control:
+        default: op
+    artifact.state:
+        default: true

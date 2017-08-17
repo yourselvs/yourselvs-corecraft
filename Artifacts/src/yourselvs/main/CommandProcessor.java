@@ -109,6 +109,11 @@ public class CommandProcessor {
 	}
 	
 	private void parseArtifact(Cmd cmd) {
+		// If user doesn't have permission, send error message
+		if(!plugin.checkPermission("artifact.use", cmd.sender)) {
+			return;
+		}
+		
 		if(cmd.args.length < 1) {
 			// If param isn't included, send help message
 			parseArtifactHelp(cmd);
@@ -145,6 +150,11 @@ public class CommandProcessor {
 	
 	private void parseArtifactHelp(Cmd cmd) {
 		Map<String, String> cmds = new HashMap<String, String>();
+		
+		// If user doesn't have permission, send error message
+		if(!plugin.checkPermission("artifact.help", cmd.sender)) {
+			return;
+		}
 		
 		cmds.put("redeem", "Redeems all artifacts in a player's inventory.");
 		cmds.put("artifact help", "View information on artifact commands.");
