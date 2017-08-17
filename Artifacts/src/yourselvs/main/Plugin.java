@@ -13,11 +13,7 @@ import yourselvs.utils.DateFormatter;
 import yourselvs.utils.Messenger;
 
 public class Plugin extends JavaPlugin 
-{
-	// TODO Log actions taken by players
-	// TODO Documentation comments
-	// TODO Testing functionality/bugs
-	
+{	
 	public static final String version = "0.1";
 	public static final String pluginName = "Artifacts";
 	public static final String prefix = "ARTIFACTS";
