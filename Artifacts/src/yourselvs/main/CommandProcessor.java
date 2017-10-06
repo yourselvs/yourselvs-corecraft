@@ -142,6 +142,10 @@ public class CommandProcessor {
 			break;
 		case "range":
 			parseArtifactRange(cmd);
+			break;
+		case "debug":
+			parseArtifactDebug(cmd);
+			break;
 		default:
 			parseArtifactError(cmd);
 		}
@@ -355,6 +359,17 @@ public class CommandProcessor {
 						ChatColor.RESET + "-" + 
 						ChatColor.YELLOW + plugin.getArtifactHandler().getRangeMax());
 			}
+		}
+	}
+	
+	private void parseArtifactDebug(Cmd cmd) {
+		switch(cmd.args[1]) {
+		case "seconds":		plugin.getMessenger().sendMessage(cmd.sender, "seconds: " + plugin.getArtifactHandler().getSeconds());
+							break;
+		case "droptime":	plugin.getMessenger().sendMessage(cmd.sender, "droptime: " + plugin.getArtifactHandler().getDropTime());
+							plugin.getMessenger().sendMessage(cmd.sender, "currtime: " + System.currentTimeMillis());
+							plugin.getMessenger().sendMessage(cmd.sender, "diff: " + (plugin.getArtifactHandler().getDropTime() - System.currentTimeMillis()));
+							break;
 		}
 	}
 	
