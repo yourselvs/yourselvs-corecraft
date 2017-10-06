@@ -1,8 +1,8 @@
 main: yourselvs.main.Plugin
-name: Plugin
+name: Artifacts
 version: 0.1
 author: yourselvs
-description: A plugin.
+description: Artifacts plugin.
 commands:
     redeem:
         description: Redeem all artifacts in your inventory.
