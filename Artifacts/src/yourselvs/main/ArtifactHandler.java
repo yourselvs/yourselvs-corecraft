@@ -119,8 +119,8 @@ public class ArtifactHandler {
 					
 					try {
 						long millis = 1000 * seconds;
-						dropTime = System.currentTimeMillis() + (millis);
-						wait(millis);
+						dropTime = System.currentTimeMillis() + millis;
+						Thread.sleep(millis);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
