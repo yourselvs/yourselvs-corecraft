@@ -16,7 +16,7 @@ public class Plugin extends JavaPlugin
 {	
 	public static final String version = "0.1";
 	public static final String pluginName = "Artifacts";
-	public static final String prefix = "ARTIFACTS";
+	public static final String prefix = "Artifacts";
 	
 	public final static Object commandLock = new Object();
 	public final static Object configLock = new Object();
@@ -26,8 +26,8 @@ public class Plugin extends JavaPlugin
 	private DateFormatter formatter;
 	private Messenger messenger;
 	
-	private String normalPrefix = "[" + ChatColor.DARK_GREEN + ChatColor.BOLD + prefix + ChatColor.RESET + "] ";
-	private String linkPrefix = ChatColor.AQUA + "[" + ChatColor.DARK_GREEN + ChatColor.BOLD + prefix + ChatColor.RESET + ChatColor.AQUA + "]" + ChatColor.RESET + " ";
+	private String normalPrefix = "[" + ChatColor.DARK_GREEN + prefix + ChatColor.RESET + "] ";
+	private String linkPrefix = ChatColor.AQUA + "[" + ChatColor.DARK_GREEN + prefix + ChatColor.RESET + ChatColor.AQUA + "]" + ChatColor.RESET + " ";
 	
 	public String getPluginName() {return pluginName;}
 	

@@ -3,10 +3,7 @@ package yourselvs.main;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -104,7 +101,7 @@ public class CommandProcessor {
 			
 			// Send message to player with how much they earned from artifacts
 			plugin.getMessenger().sendMessage(cmd.sender, artifacts + ChatColor.RESET + 
-					" redeemed for a total of $" + amountRedeemed);
+					" redeemed for a total of $" + ChatColor.YELLOW + amountRedeemed);
 		}
 	}
 	
@@ -153,21 +150,27 @@ public class CommandProcessor {
 	
 	
 	private void parseArtifactHelp(Cmd cmd) {
-		Map<String, String> cmds = new HashMap<String, String>();
+		List<String> args = new ArrayList<String>();
 		
 		// If user doesn't have permission, send error message
 		if(!plugin.checkPermission("artifact.help", cmd.sender)) {
 			return;
 		}
 		
-		cmds.put("redeem", "Redeems all artifacts in a player's inventory.");
-		cmds.put("artifact help", "View information on artifact commands.");
-		cmds.put("artifact state", "Retrieves information about the state of the plugin.");
-		cmds.put("artifact set", "Sets the artifact to the item in your main hand.");
-		cmds.put("artifact time [seconds]", "Sets the number of seconds in between artifact drops.");
-		cmds.put("artifact range [min] [max]", "Sets the integer range of artifact values.");
-		cmds.put("artifact stop", "Stops artifacts from dropping.");
-		cmds.put("artifact start", "Begins dropping artifacts.");
+		addCommand(args, "redeem", "Redeems all artifacts in a player's inventory.");
+		addCommand(args, "artifact help", "View information on artifact commands.");
+		addCommand(args, "artifact state", "Retrieves information about the state of the plugin.");
+		addCommand(args, "artifact set", "Sets the artifact to the item in your main hand.");
+		addCommand(args, "artifact time [seconds]", "Sets the number of seconds in between artifact drops.");
+		addCommand(args, "artifact range [min] [max]", "Sets the integer range of artifact values.");
+		addCommand(args, "artifact stop", "Stops artifacts from dropping.");
+		addCommand(args, "artifact start", "Begins dropping artifacts.");
+		
+		plugin.getMessenger().sendMessages(cmd.sender, args, "Artifact Commands");
+	}
+	
+	private void addCommand(List<String> args, String key, String value) {
+		args.add(ChatColor.YELLOW + "/" + key + ChatColor.RESET + " : " + value);
 	}
 	
 	private void parseArtifactSet(Cmd cmd) {
