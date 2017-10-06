@@ -1,5 +1,7 @@
 package yourselvs.main;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Random;
 import java.util.logging.Level;
 
@@ -151,7 +153,10 @@ public class ArtifactHandler {
     		}
 		}
 		
-		plugin.getMessenger().sendServerMessage("Artifacts have been dropped to all players! Artifacts drop again in 10 minutes. Use " + ChatColor.YELLOW + "/redeem" + ChatColor.RESET + " to redeem them to the server.");
+		SimpleDateFormat sdf = new SimpleDateFormat("mm:ss");
+		Date refreshTime = new Date(1000 * getSeconds());
+		String time = sdf.format(refreshTime);
+		plugin.getMessenger().sendServerMessage("Artifacts have been dropped to all players! Artifacts drop again in " + ChatColor.YELLOW + time + ChatColor.RESET + ". Use " + ChatColor.YELLOW + "/redeem" + ChatColor.RESET + " to redeem them to the server.");
 	}
 	
 	private boolean hasValidParameters() {
