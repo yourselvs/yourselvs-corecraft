@@ -39,6 +39,7 @@ public class Plugin extends JavaPlugin
 	@Override
 	public void onEnable() {
 		saveDefaultConfig();
+		saveConfig();
     	
     	formatter = new DateFormatter();
     	messenger = new Messenger(this, normalPrefix, linkPrefix, ChatColor.YELLOW);
@@ -68,6 +69,8 @@ public class Plugin extends JavaPlugin
 			public void run() {
 				synchronized(configLock) {
 					getConfig().set(str, obj);
+					
+					saveConfig();
 				}
 			}
 		});
