@@ -20,4 +20,4 @@ permissions:
     artifact.control:
         default: op
     artifact.state:
-        default: true
+        default: op

@@ -92,7 +92,7 @@ public class CommandProcessor {
 		}
 		else {
 			// Make artifact string
-			String artifacts = ChatColor.YELLOW + "" + numRedeemed + " Artifact";
+			String artifacts = ChatColor.YELLOW + "" + numRedeemed + " Artifact" + ChatColor.RESET;
 			
 			// Add plural
 			if(numRedeemed > 1) {
@@ -100,8 +100,8 @@ public class CommandProcessor {
 			}
 			
 			// Send message to player with how much they earned from artifacts
-			plugin.getMessenger().sendMessage(cmd.sender, artifacts + ChatColor.RESET + 
-					" redeemed for a total of $" + ChatColor.YELLOW + amountRedeemed);
+			plugin.getMessenger().sendMessage(cmd.sender, artifacts + " redeemed for a total of " + 
+												ChatColor.YELLOW + "$" + amountRedeemed);
 		}
 	}
 	
@@ -325,6 +325,12 @@ public class CommandProcessor {
 		
 		// Add artifact display name
 		String itemName = plugin.getArtifactHandler().getArtifact().getItemMeta().getDisplayName();
+		
+		// If artifact doesn't have a name, display material
+		if(itemName == null) {
+			itemName = plugin.getArtifactHandler().getArtifact().getType().name();
+		}
+			
 		msgs.add("Artifact name: " + itemName);
 		
 		// Send messages to player
@@ -393,6 +399,10 @@ public class CommandProcessor {
 	}
 	
 	private void parseArtifactDebug(Cmd cmd) {
+		if(!plugin.checkPermission("artifact.control", cmd.sender)) {
+			return;
+		}
+		
 		switch(cmd.args[1]) {
 		case "seconds":		plugin.getMessenger().sendMessage(cmd.sender, "seconds: " + plugin.getArtifactHandler().getSeconds());
 							break;
