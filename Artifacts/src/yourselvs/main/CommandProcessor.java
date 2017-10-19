@@ -167,6 +167,9 @@ public class CommandProcessor {
 		case "debug":
 			parseArtifactDebug(cmd);
 			break;
+		case "drop":
+			parseArtifactDrop(cmd);
+			break;
 		default:
 			parseArtifactError(cmd);
 		}
@@ -397,6 +400,31 @@ public class CommandProcessor {
 							plugin.getMessenger().sendMessage(cmd.sender, "currtime: " + System.currentTimeMillis());
 							plugin.getMessenger().sendMessage(cmd.sender, "diff: " + (plugin.getArtifactHandler().getDropTime() - System.currentTimeMillis()));
 							break;
+		}
+	}
+	
+	private void parseArtifactDrop(Cmd cmd) {
+		if(!plugin.checkPermission("artifact.control", cmd.sender)) {
+			return;
+		}
+		
+		if(cmd.args.length <= 1) {
+			plugin.getArtifactHandler().dropArtifacts();
+		}
+		else if(cmd.args.length <= 2) {
+			@SuppressWarnings("deprecation")
+			Player player = Bukkit.getPlayer(cmd.args[1]);
+			
+			if(player == null) {
+				plugin.getMessenger().sendErrorMessage(cmd.sender, "Player " + ChatColor.YELLOW + cmd.args[1] + ChatColor.RESET + " not found or is offline.");
+			}
+			else {
+				plugin.getArtifactHandler().dropArtifactPlayer(player);
+				
+				if(!(player.getName().equals(cmd.sender.getName()))) {
+					plugin.getMessenger().sendMessage(cmd.sender, "An artifact was dropped to " + ChatColor.YELLOW + cmd.args[1] + ChatColor.RESET + ".");
+				}
+			}
 		}
 	}
 	
