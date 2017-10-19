@@ -4,6 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -47,7 +49,7 @@ public class CommandProcessor {
 	
 	private void parseRedeem(Cmd cmd) {
 		Player player;
-		int numRedeemed = 0, amountRedeemed = 0;
+		int numRedeemed = 0, amountRedeemed = 0, first;
 		ItemStack air = new ItemStack(Material.AIR);
 		
 		// If user doesn't have permission, send error message
@@ -65,10 +67,8 @@ public class CommandProcessor {
 		player = (Player) cmd.sender;
 		
 		// Loop through all stacks of artifacts in player inventory
-		while(player.getInventory().contains(plugin.getArtifactHandler().getArtifact())) {
-			// Get location and of first found artifact
-			int first = player.getInventory().first(plugin.getArtifactHandler().getArtifact());
-			
+		// Get location and of first found artifact
+		while((first = findFirstArtifact(player, plugin.getArtifactHandler().getArtifact())) != -1) {			
 			// Get ItemStack of said artifact
 			ItemStack artifacts = player.getInventory().getItem(first);
 			
@@ -103,6 +103,30 @@ public class CommandProcessor {
 			plugin.getMessenger().sendMessage(cmd.sender, artifacts + ChatColor.RESET + 
 					" redeemed for a total of $" + ChatColor.YELLOW + amountRedeemed);
 		}
+	}
+	
+	private int findFirstArtifact(Player player, ItemStack artifact) {
+		ItemStack[] contents = player.getInventory().getContents();
+		ItemStack air = new ItemStack(Material.AIR);
+		
+		// Get artifact info
+		String artifactName = artifact.getItemMeta().getDisplayName();
+		
+		// Iterate through player inventory
+		for(int i = 0; i < contents.length; i++) {
+			// Get current item info
+			if(contents[i] != null && !contents[i].equals(air)) {
+				String itemName = contents[i].getItemMeta().getDisplayName();
+				
+				// If it matches artifact, return success
+				if(itemName != null && itemName.equals(artifactName)) {
+					return i;
+				}
+			}
+		}
+		
+		// No matches, return failure
+		return -1;
 	}
 	
 	private void parseArtifact(Cmd cmd) {
