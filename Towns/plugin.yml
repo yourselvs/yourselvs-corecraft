@@ -1,0 +1,7 @@
+main: yourselvs.towns.main.Plugin
+name: Towns
+version: 0.1
+author: yourselvs
+description: Towns plugin.
+commands:
+permissions:

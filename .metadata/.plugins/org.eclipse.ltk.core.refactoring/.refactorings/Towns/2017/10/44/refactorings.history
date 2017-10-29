@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;Towns/PluginFramework.iml&apos; to &apos;Towns.iml&apos;" description="Rename resource &apos;PluginFramework.iml&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="PluginFramework.iml" name="Towns.iml" stamp="1509315104799" updateReferences="true"/>
+</session>

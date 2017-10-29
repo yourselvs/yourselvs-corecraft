@@ -1,0 +1,13 @@
+INDEX VERSION 1.130+F:\Projects\yourselvs-corecraft\.metadata\.plugins\org.eclipse.jdt.core
+3926621051.index
+173440826.index
+2532273049.index
+1354658695.index
+3344232001.index
+222213654.index
+599444037.index
+4245290149.index
+127205131.index
+2172053524.index
+231005749.index
+2898325779.index
