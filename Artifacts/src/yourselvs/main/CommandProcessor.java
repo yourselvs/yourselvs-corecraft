@@ -90,7 +90,7 @@ public class CommandProcessor {
 		}
 		else {
 			// Make artifact string
-			String artifacts = ChatColor.YELLOW + "" + numRedeemed + " Artifact";
+			String artifacts = ChatColor.YELLOW + "" + numRedeemed + " Artifact" + ChatColor.RESET;
 			
 			// Add plural
 			if(numRedeemed > 1) {
@@ -98,27 +98,17 @@ public class CommandProcessor {
 			}
 			
 			// Send message to player with how much they earned from artifacts
-			plugin.getMessenger().sendMessage(cmd.sender, artifacts + ChatColor.RESET + 
-					" redeemed for a total of $" + amountRedeemed);
+			plugin.getMessenger().sendMessage(cmd.sender, artifacts + " redeemed for a total of " + 
+												ChatColor.YELLOW + "$" + amountRedeemed);
 		}
 	}
 	
 	private int findFirstArtifact(Player player, ItemStack artifact) {
 		ItemStack[] contents = player.getInventory().getContents();
 		
-		// Get artifact info
-		String artifactName = artifact.getItemMeta().getDisplayName();
-		List<String> artifactLore = artifact.getItemMeta().getLore();
-		
 		// Iterate through player inventory
 		for(int i = 0; i < contents.length; i++) {
 			// Get current item info
-			String itemName = contents[i].getItemMeta().getDisplayName();
-			List<String> itemLore = contents[i].getItemMeta().getLore();
-			
-			// If it matches artifact, return success
-			if(itemName.equals(artifactName) && itemLore.equals(artifactLore)) {
-				return i;
 			}
 		}
 		
@@ -160,6 +150,13 @@ public class CommandProcessor {
 			break;
 		case "range":
 			parseArtifactRange(cmd);
+			break;
+		case "debug":
+			parseArtifactDebug(cmd);
+			break;
+		case "drop":
+			parseArtifactDrop(cmd);
+			break;
 		default:
 			parseArtifactError(cmd);
 		}
@@ -315,6 +312,12 @@ public class CommandProcessor {
 		
 		// Add artifact display name
 		String itemName = plugin.getArtifactHandler().getArtifact().getItemMeta().getDisplayName();
+		
+		// If artifact doesn't have a name, display material
+		if(itemName == null) {
+			itemName = plugin.getArtifactHandler().getArtifact().getType().name();
+		}
+			
 		msgs.add("Artifact name: " + itemName);
 		
 		// Send messages to player
@@ -378,6 +381,46 @@ public class CommandProcessor {
 						ChatColor.YELLOW + plugin.getArtifactHandler().getRangeMin() + 
 						ChatColor.RESET + "-" + 
 						ChatColor.YELLOW + plugin.getArtifactHandler().getRangeMax());
+			}
+		}
+	}
+	
+	private void parseArtifactDebug(Cmd cmd) {
+		if(!plugin.checkPermission("artifact.control", cmd.sender)) {
+			return;
+		}
+		
+		switch(cmd.args[1]) {
+		case "seconds":		plugin.getMessenger().sendMessage(cmd.sender, "seconds: " + plugin.getArtifactHandler().getSeconds());
+							break;
+		case "droptime":	plugin.getMessenger().sendMessage(cmd.sender, "droptime: " + plugin.getArtifactHandler().getDropTime());
+							plugin.getMessenger().sendMessage(cmd.sender, "currtime: " + System.currentTimeMillis());
+							plugin.getMessenger().sendMessage(cmd.sender, "diff: " + (plugin.getArtifactHandler().getDropTime() - System.currentTimeMillis()));
+							break;
+		}
+	}
+	
+	private void parseArtifactDrop(Cmd cmd) {
+		if(!plugin.checkPermission("artifact.control", cmd.sender)) {
+			return;
+		}
+		
+		if(cmd.args.length <= 1) {
+			plugin.getArtifactHandler().dropArtifacts();
+		}
+		else if(cmd.args.length <= 2) {
+			@SuppressWarnings("deprecation")
+			Player player = Bukkit.getPlayer(cmd.args[1]);
+			
+			if(player == null) {
+				plugin.getMessenger().sendErrorMessage(cmd.sender, "Player " + ChatColor.YELLOW + cmd.args[1] + ChatColor.RESET + " not found or is offline.");
+			}
+			else {
+				plugin.getArtifactHandler().dropArtifactPlayer(player);
+				
+				if(!(player.getName().equals(cmd.sender.getName()))) {
+					plugin.getMessenger().sendMessage(cmd.sender, "An artifact was dropped to " + ChatColor.YELLOW + cmd.args[1] + ChatColor.RESET + ".");
+				}
 			}
 		}
 	}

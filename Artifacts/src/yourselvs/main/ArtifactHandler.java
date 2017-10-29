@@ -1,5 +1,7 @@
 package yourselvs.main;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Random;
 import java.util.logging.Level;
 
@@ -109,18 +111,20 @@ public class ArtifactHandler {
 		artifactThread = new Thread(new Runnable() {
 			@Override
 			public void run() {
+				long millis = 1000 * seconds;
+				
 				while(true) {
+					
 					if(!hasValidParameters()) {
 						plugin.getLogger().log(Level.SEVERE, "Artifacts could not drop as parameters were invalid.");
 					}
 					else if(running) {
+						dropTime = System.currentTimeMillis() + millis;
 						dropArtifacts();
 					}
 					
 					try {
-						long millis = 1000 * seconds;
-						dropTime = System.currentTimeMillis() + (millis);
-						wait(millis);
+						Thread.sleep(millis);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -132,33 +136,50 @@ public class ArtifactHandler {
 		artifactThread.start();
 	}
 	
-	private void dropArtifacts() {
+	public void dropArtifacts() {
 		if(artifact != null) {
     		for(Player player : Bukkit.getOnlinePlayers()) {
-    			int firstEmpty = player.getInventory().firstEmpty();
-    			int firstArtifact = player.getInventory().first(artifact);
-    			
-    			if(firstEmpty < 0) {
-    				plugin.getMessenger().sendErrorMessage(player, "You could not receive an artifact because your inventory is full.");
-    				
-    			}
-    			else if(firstArtifact >= 0) {
-    				plugin.getMessenger().sendErrorMessage(player, "You could not receive an artifact because you have one in your inventory already.");
-    			}
-    			else {
-    				player.getInventory().setItem(firstEmpty, artifact);
-    			}
+    			dropArtifactPlayer(player);
     		}
 		}
 		
-		plugin.getMessenger().sendServerMessage("Artifacts have been dropped to all players! Artifacts drop again in 10 minutes. Use " + ChatColor.YELLOW + "/redeem" + ChatColor.RESET + " to redeem them to the server.");
+		SimpleDateFormat sdf = new SimpleDateFormat("mm:ss");
+		Date refreshTime = new Date(dropTime - System.currentTimeMillis());
+		String time = sdf.format(refreshTime);
+		plugin.getMessenger().sendServerMessage("Artifacts have been dropped to all players! Artifacts drop again in " + ChatColor.YELLOW + time + ChatColor.RESET + ". Use " + ChatColor.YELLOW + "/redeem" + ChatColor.RESET + " to redeem them to the server.");
+	}
+	
+	public void dropArtifactPlayer(Player player) {
+		int firstEmpty = player.getInventory().firstEmpty();
+		int firstArtifact = player.getInventory().first(artifact);
+		
+		if(firstEmpty < 0) {
+			plugin.getMessenger().sendErrorMessage(player, "You could not receive an artifact because your inventory is full.");
+			
+		}
+		else if(firstArtifact >= 0) {
+			plugin.getMessenger().sendErrorMessage(player, "You could not receive an artifact because you have one in your inventory already.");
+		}
+		else {
+			plugin.getMessenger().sendMessage(player, "An artifact was dropped to you!");
+			player.getInventory().setItem(firstEmpty, artifact);
+		}
 	}
 	
 	private boolean hasValidParameters() {
-		if(artifact == null || artifact.getAmount() != 1 || seconds < 1) {
-			return false;
+		if(artifact == null) {
+			plugin.getLogger().log(Level.SEVERE, "Artifacts variable is null.");
+		}
+		else if(artifact.getAmount() != 1) {
+			plugin.getLogger().log(Level.SEVERE, "Artifact amount isn't 1.");
+		}
+		else if(seconds < 1) {
+			plugin.getLogger().log(Level.SEVERE, "Artifact drop seconds is less than 1");
+		}
+		else {
+			return true;
 		}
 		
-		return true;
+		return false;
 	}
 }

@@ -45,7 +45,7 @@ public class Messenger {
 	
 	public void sendMessages(CommandSender player, List<String> msgs, String title){
 		ArrayList<String> updateMessages = new ArrayList<String>();
-		updateMessages.add(prefix + ChatColor.DARK_GRAY + "- - [ " + highlight + title + ChatColor.RESET + ChatColor.DARK_GRAY + "] - - - - - - - - - - - -");
+		updateMessages.add(prefix + ChatColor.DARK_GRAY + "- - [ " + highlight + title + ChatColor.RESET + ChatColor.DARK_GRAY + "] - - - - - - - -");
 		updateMessages.addAll(msgs);
 		player.sendMessage(updateMessages.toArray(new String[msgs.size()]));
 	}
